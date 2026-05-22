@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const useStorageState = (key, initialState) => {
     const [value, setValue] = useState(
-        localStorage.getItem(key) || initialState
+        localStorage.getItem(key) ?? initialState
     );
 
     useEffect(() => {
