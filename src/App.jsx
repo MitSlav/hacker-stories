@@ -3,7 +3,14 @@ import { useStories } from "./hooks/useStories";
 import List from './List';
 
 const App = () => {
-  const [searchedStories, searchTerm, handleSearch, handleRemoveStory, isLoading, isError] = useStories();
+  const [
+    searchedStories,
+    searchTerm,
+    handleSearch,
+    handleRemoveStory,
+    isLoading,
+    isError
+  ] = useStories();
 
   return (
     <div>
