@@ -4,7 +4,7 @@ import List from './List';
 
 const App = () => {
   const [
-    searchedStories,
+    stories,
     searchTerm,
     handleSearch,
     handleRemoveStory,
@@ -33,7 +33,7 @@ const App = () => {
         <p>Loading ...</p>
       ) : (
         <List
-          list={searchedStories}
+          list={stories.data}
           onRemoveItem={handleRemoveStory}
         />
       )}

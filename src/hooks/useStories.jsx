@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { useStorageState } from "./useStorageState";
 
 const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT'
@@ -52,10 +52,12 @@ export const useStories = () => {
         { data: [], isLoading: false, isError: false }
     );
 
-    useEffect(() => {
+    const handleFetchStories = useCallback(() => {
+        if (!searchTerm) return;
+
         dispatchStories({ type: STORIES_FETCH_INIT });
 
-        fetch(`${API_ENDPOINT}react`)
+        fetch(`${API_ENDPOINT}${searchTerm}`)
             .then((response) => response.json())
             .then((result) => {
                 dispatchStories({
@@ -64,7 +66,11 @@ export const useStories = () => {
                 })
             })
             .catch(() => dispatchStories({ type: STORIES_FETCH_FAILURE }));
-    }, []);
+    }, [searchTerm])
+
+    useEffect(() => {
+        handleFetchStories();
+    }, [handleFetchStories]);
 
     const handleRemoveStory = (item) => {
         dispatchStories({
@@ -77,12 +83,8 @@ export const useStories = () => {
         setSearchTerm(event.target.value);
     };
 
-    const searchedStories = stories.data.filter((story) =>
-        story.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     return [
-        searchedStories,
+        stories,
         searchTerm,
         handleSearch,
         handleRemoveStory,
