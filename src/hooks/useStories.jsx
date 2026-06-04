@@ -47,17 +47,17 @@ export const useStories = () => {
         'React'
     );
 
+    const [url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
+
     const [stories, dispatchStories] = useReducer(
         storiesReducer,
         { data: [], isLoading: false, isError: false }
     );
 
     const handleFetchStories = useCallback(() => {
-        if (!searchTerm) return;
-
         dispatchStories({ type: STORIES_FETCH_INIT });
 
-        fetch(`${API_ENDPOINT}${searchTerm}`)
+        fetch(url)
             .then((response) => response.json())
             .then((result) => {
                 dispatchStories({
@@ -66,7 +66,7 @@ export const useStories = () => {
                 })
             })
             .catch(() => dispatchStories({ type: STORIES_FETCH_FAILURE }));
-    }, [searchTerm])
+    }, [url])
 
     useEffect(() => {
         handleFetchStories();
@@ -79,14 +79,19 @@ export const useStories = () => {
         })
     };
 
-    const handleSearch = (event) => {
+    const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
     };
 
+    const handleSearchSubmit = () => {
+        setUrl(`${API_ENDPOINT}${searchTerm}`)
+    }
+
     return [
-        stories,
+        stories.data,
         searchTerm,
-        handleSearch,
+        handleSearchInput,
+        handleSearchSubmit,
         handleRemoveStory,
         stories.isLoading,
         stories.isError

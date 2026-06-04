@@ -6,7 +6,8 @@ const App = () => {
   const [
     stories,
     searchTerm,
-    handleSearch,
+    handleSearchInput,
+    handleSearchSubmit,
     handleRemoveStory,
     isLoading,
     isError
@@ -20,10 +21,18 @@ const App = () => {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
+
+      <button
+        type='button'
+        disabled={!searchTerm}
+        onClick={handleSearchSubmit}
+      >
+        Submit
+      </button>
 
       <hr />
 
@@ -33,7 +42,7 @@ const App = () => {
         <p>Loading ...</p>
       ) : (
         <List
-          list={stories.data}
+          list={stories}
           onRemoveItem={handleRemoveStory}
         />
       )}
