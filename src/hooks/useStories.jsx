@@ -85,8 +85,11 @@ export const useStories = () => {
         setSearchTerm(event.target.value);
     };
 
-    const handleSearchSubmit = () => {
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        
         setUrl(`${API_ENDPOINT}${searchTerm}`)
+        
     }
 
     return [
