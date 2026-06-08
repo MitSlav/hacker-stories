@@ -1,11 +1,12 @@
 import InputWithLabel from './InputWithLabel';
+import styles from './App.module.css';
 
 const SearchForm = ({
     searchTerm,
     onSearchInput,
     searchAction,
 }) => (
-    <form action={searchAction}>
+    <form action={searchAction} className={styles.searchForm}>
         <InputWithLabel
             id="search"
             value={searchTerm}
@@ -18,6 +19,7 @@ const SearchForm = ({
         <button
             type='submit'
             disabled={!searchTerm}
+            className={`${styles.button} ${styles.buttonLarge}`}
         >
             Submit
         </button>

@@ -1,6 +1,7 @@
 import { useStories } from "./hooks/useStories";
 import List from './List';
 import SearchForm from './SearchForm';
+import styles from './App.module.css';
 
 const App = () => {
   const [
@@ -14,16 +15,14 @@ const App = () => {
   ] = useStories();
 
   return (
-    <div>
-      <h1>My Hacker Stories</h1>
+    <div className={styles.container}>
+      <h1 className={styles.headlinePrimary}>My Hacker Stories</h1>
 
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
         searchAction={searchAction}
       />
-
-      <hr />
 
       {isError && <p>Something went wrong ...</p>}
 
