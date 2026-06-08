@@ -1,6 +1,7 @@
 import { useStories } from "./hooks/useStories";
 import List from './List';
 import SearchForm from './SearchForm';
+import { StyledContainer, StyledHeadlinePrimary } from "./Styles";
 
 const App = () => {
   const [
@@ -14,8 +15,8 @@ const App = () => {
   ] = useStories();
 
   return (
-    <div>
-      <h1>My Hacker Stories</h1>
+    <StyledContainer>
+      <StyledHeadlinePrimary>My Hacker Stories</StyledHeadlinePrimary>
 
       <SearchForm
         searchTerm={searchTerm}
@@ -35,7 +36,7 @@ const App = () => {
           onRemoveItem={handleRemoveStory}
         />
       )}
-    </div>
+    </StyledContainer>
   );
 };
 

@@ -1,11 +1,12 @@
 import InputWithLabel from './InputWithLabel';
+import { StyledButtonLarge, StyledSearchForm } from './Styles';
 
 const SearchForm = ({
     searchTerm,
     onSearchInput,
     searchAction,
 }) => (
-    <form action={searchAction}>
+    <StyledSearchForm action={searchAction}>
         <InputWithLabel
             id="search"
             value={searchTerm}
@@ -15,13 +16,13 @@ const SearchForm = ({
             <strong>Search:</strong>
         </InputWithLabel>
 
-        <button
+        <StyledButtonLarge
             type='submit'
             disabled={!searchTerm}
         >
             Submit
-        </button>
-    </form>
+        </StyledButtonLarge>
+    </StyledSearchForm>
 )
 
 export default SearchForm;
