@@ -5,7 +5,7 @@ const SearchForm = ({
     onSearchInput,
     searchAction,
 }) => (
-    <form action={searchAction}>
+    <form action={searchAction} className='search-form'>
         <InputWithLabel
             id="search"
             value={searchTerm}
@@ -18,6 +18,7 @@ const SearchForm = ({
         <button
             type='submit'
             disabled={!searchTerm}
+            className='button button_large'
         >
             Submit
         </button>
