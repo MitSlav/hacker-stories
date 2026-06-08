@@ -7,7 +7,7 @@ const App = () => {
     stories,
     searchTerm,
     handleSearchInput,
-    handleSearchSubmit,
+    searchAction,
     handleRemoveStory,
     isLoading,
     isError
@@ -20,7 +20,7 @@ const App = () => {
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
-        onSearchSubmit={handleSearchSubmit}
+        searchAction={searchAction}
       />
 
       <hr />

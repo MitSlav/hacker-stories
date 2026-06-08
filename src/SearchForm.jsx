@@ -3,9 +3,9 @@ import InputWithLabel from './InputWithLabel';
 const SearchForm = ({
     searchTerm,
     onSearchInput,
-    onSearchSubmit,
+    searchAction,
 }) => (
-    <form onSubmit={onSearchSubmit}>
+    <form action={searchAction}>
         <InputWithLabel
             id="search"
             value={searchTerm}

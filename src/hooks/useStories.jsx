@@ -85,18 +85,15 @@ export const useStories = () => {
         setSearchTerm(event.target.value);
     };
 
-    const handleSearchSubmit = (event) => {
-        event.preventDefault();
-        
+    const searchAction = () => {
         setUrl(`${API_ENDPOINT}${searchTerm}`)
-        
     }
 
     return [
         stories.data,
         searchTerm,
         handleSearchInput,
-        handleSearchSubmit,
+        searchAction,
         handleRemoveStory,
         stories.isLoading,
         stories.isError
