@@ -1,4 +1,5 @@
 import { StyledButtonSmall, StyledColumn, StyledItem } from "./Styles";
+import Check from "./check.svg?react";
 
 const Item = ({ item, onRemoveItem }) => (
     <StyledItem>
@@ -10,7 +11,7 @@ const Item = ({ item, onRemoveItem }) => (
         <StyledColumn width="10%">{item.points}</StyledColumn>
         <StyledColumn width="10%">
             <StyledButtonSmall type="button" onClick={() => onRemoveItem(item)}>
-                Dismiss
+                <Check height="18px" width="18px" />
             </StyledButtonSmall>
         </StyledColumn>
     </StyledItem>
