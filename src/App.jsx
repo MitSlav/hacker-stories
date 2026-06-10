@@ -14,6 +14,8 @@ const App = () => {
     isError
   ] = useStories();
 
+  console.log('B:App')
+
   return (
     <StyledContainer>
       <StyledHeadlinePrimary>My Hacker Stories</StyledHeadlinePrimary>
