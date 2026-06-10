@@ -71,6 +71,7 @@ export const useStories = () => {
     }, [url])
 
     useEffect(() => {
+        console.log('How many times do I log?');
         handleFetchStories();
     }, [handleFetchStories]);
 

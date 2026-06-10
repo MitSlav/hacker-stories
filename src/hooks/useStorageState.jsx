@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 export const useStorageState = (key, initialState) => {
-    const [value, setValue] = useState(
-        localStorage.getItem(key) ?? initialState
-    );
+  const isMounted = useRef(false);
 
-    useEffect(() => {
-        localStorage.setItem(key, value);
-    }, [value, key]);
+  const [value, setValue] = useState(
+    localStorage.getItem(key) ?? initialState,
+  );
 
-    return [value, setValue];
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      console.log('A');
+      localStorage.setItem(key, value);
+    }
+  }, [value, key]);
+
+  return [value, setValue];
 };
