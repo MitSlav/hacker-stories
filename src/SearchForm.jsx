@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import InputWithLabel from './InputWithLabel';
 import { StyledButtonLarge, StyledSearchForm } from './Styles';
 
@@ -25,4 +26,4 @@ const SearchForm = ({
     </StyledSearchForm>
 )
 
-export default SearchForm;
+export default memo(SearchForm);

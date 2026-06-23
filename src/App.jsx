@@ -10,14 +10,15 @@ const App = () => {
     handleSearchInput,
     searchAction,
     handleRemoveStory,
+    getSumComments,
     isLoading,
     isError
   ] = useStories();
 
-  console.log('B:App')
-
   return (
     <StyledContainer>
+      <h1>My Hacker Stories with {getSumComments} comments.</h1>
+
       <StyledHeadlinePrimary>My Hacker Stories</StyledHeadlinePrimary>
 
       <SearchForm

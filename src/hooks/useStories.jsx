@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { useStorageState } from './useStorageState';
 import axios from 'axios';
 
@@ -72,7 +78,6 @@ export const useStories = () => {
   }, [url]);
 
   useEffect(() => {
-    console.log('How many times do I log?');
     handleFetchStories();
   }, [handleFetchStories]);
 
@@ -83,13 +88,23 @@ export const useStories = () => {
     });
   }, []);
 
-  const handleSearchInput = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  const handleSearchInput = useCallback(
+    (event) => {
+      setSearchTerm(event.target.value);
+    },
+    [setSearchTerm],
+  );
 
-  const searchAction = () => {
+  const searchAction = useCallback(() => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
-  };
+  }, [searchTerm]);
+
+  const getSumComments = useMemo(() => {
+    return stories.data.reduce(
+      (result, value) => result + value.num_comments,
+      0,
+    );
+  }, [stories]);
 
   return [
     stories.data,
@@ -97,6 +112,7 @@ export const useStories = () => {
     handleSearchInput,
     searchAction,
     handleRemoveStory,
+    getSumComments,
     stories.isLoading,
     stories.isError,
   ];
