@@ -10,19 +10,20 @@ const App = () => {
     handleSearchInput,
     searchAction,
     handleRemoveStory,
-    getSumComments,
+    sumComments,
     isLoading,
     isError,
   } = useStories();
 
   return (
     <StyledContainer>
-      <h1>My Hacker Stories with {getSumComments} comments.</h1>
+      <h1>My Hacker Stories with {sumComments} comments.</h1>
 
       <StyledHeadlinePrimary>My Hacker Stories</StyledHeadlinePrimary>
 
       <SearchForm
         searchTerm={searchTerm}
+        isLoading={isLoading}
         onSearchInput={handleSearchInput}
         searchAction={searchAction}
       />

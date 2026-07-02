@@ -10,12 +10,14 @@ import { useStorageState } from './useStorageState';
 import axios from 'axios';
 import { Story } from '../types/item';
 
-const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT' as const;
-const STORIES_FETCH_SUCCESS = 'STORIES_FETCH_SUCCESS' as const;
-const STORIES_FETCH_FAILURE = 'STORIES_FETCH_FAILURE' as const;
-const REMOVE_STORY = 'REMOVE_STORY' as const;
-
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
+enum StoriesActionType {
+  FETCH_INIT = 'FETCH_INIT',
+  FETCH_SUCCESS = 'FETCH_SUCCESS',
+  FETCH_FAILURE = 'FETCH_FAILURE',
+  REMOVE_STORY = 'REMOVE_STORY',
+}
 
 type StoriesState = {
   data: Story[];
@@ -23,55 +25,37 @@ type StoriesState = {
   isError: boolean;
 };
 
-type StoriesFetchInitAction = {
-  type: typeof STORIES_FETCH_INIT;
-};
-
-type StoriesFetchSuccessAction = {
-  type: typeof STORIES_FETCH_SUCCESS;
-  payload: Story[];
-};
-
-type StoriesFetchFailureAction = {
-  type: typeof STORIES_FETCH_FAILURE;
-};
-
-type StoriesRemoveAction = {
-  type: typeof REMOVE_STORY;
-  payload: Story;
-};
-
 type StoriesAction =
-  | StoriesFetchInitAction
-  | StoriesFetchSuccessAction
-  | StoriesFetchFailureAction
-  | StoriesRemoveAction;
+  | { type: StoriesActionType.FETCH_INIT }
+  | { type: StoriesActionType.FETCH_SUCCESS; payload: Story[] }
+  | { type: StoriesActionType.FETCH_FAILURE }
+  | { type: StoriesActionType.REMOVE_STORY; payload: Story };
 
 const storiesReducer = (
   state: StoriesState,
   action: StoriesAction,
 ) => {
   switch (action.type) {
-    case STORIES_FETCH_INIT:
+    case StoriesActionType.FETCH_INIT:
       return {
         ...state,
         isLoading: true,
         isError: false,
       };
-    case STORIES_FETCH_SUCCESS:
+    case StoriesActionType.FETCH_SUCCESS:
       return {
         ...state,
         isLoading: false,
         isError: false,
         data: action.payload,
       };
-    case STORIES_FETCH_FAILURE:
+    case StoriesActionType.FETCH_FAILURE:
       return {
         ...state,
         isLoading: false,
         isError: true,
       };
-    case REMOVE_STORY:
+    case StoriesActionType.REMOVE_STORY:
       return {
         ...state,
         data: state.data.filter(
@@ -79,7 +63,7 @@ const storiesReducer = (
         ),
       };
     default:
-      throw new Error();
+      throw new Error('Unhandled action type');
   }
 };
 
@@ -97,28 +81,37 @@ export const useStories = () => {
     isError: false,
   });
 
-  const handleFetchStories = useCallback(async () => {
-    dispatchStories({ type: STORIES_FETCH_INIT });
+  const handleFetchStories = useCallback(
+    async (signal: AbortSignal) => {
+      dispatchStories({ type: StoriesActionType.FETCH_INIT });
 
-    try {
-      const result = await axios.get(url);
+      try {
+        const result = await axios.get(url, { signal: signal });
 
-      dispatchStories({
-        type: STORIES_FETCH_SUCCESS,
-        payload: result.data.hits,
-      });
-    } catch {
-      dispatchStories({ type: STORIES_FETCH_FAILURE });
-    }
-  }, [url]);
+        dispatchStories({
+          type: StoriesActionType.FETCH_SUCCESS,
+          payload: result.data.hits,
+        });
+      } catch {
+        dispatchStories({ type: StoriesActionType.FETCH_FAILURE });
+      }
+    },
+    [url],
+  );
 
   useEffect(() => {
-    handleFetchStories();
+    const abortController = new AbortController();
+
+    handleFetchStories(abortController.signal);
+
+    return () => {
+      abortController.abort();
+    };
   }, [handleFetchStories]);
 
   const handleRemoveStory = useCallback((item: Story) => {
     dispatchStories({
-      type: 'REMOVE_STORY',
+      type: StoriesActionType.REMOVE_STORY,
       payload: item,
     });
   }, []);
@@ -134,12 +127,12 @@ export const useStories = () => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
   }, [searchTerm]);
 
-  const getSumComments = useMemo(() => {
+  const sumComments = useMemo(() => {
     return stories.data.reduce(
-      (result, value) => result + value.num_comments,
+      (result, value) => result + (value.num_comments || 0),
       0,
     );
-  }, [stories]);
+  }, [stories.data]);
 
   return {
     stories: stories.data,
@@ -147,7 +140,7 @@ export const useStories = () => {
     handleSearchInput,
     searchAction,
     handleRemoveStory,
-    getSumComments,
+    sumComments,
     isLoading: stories.isLoading,
     isError: stories.isError,
   };
