@@ -1,4 +1,5 @@
 import {
+  ChangeEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -7,15 +8,49 @@ import {
 } from 'react';
 import { useStorageState } from './useStorageState';
 import axios from 'axios';
+import { Story } from '../types/item';
 
-const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT';
-const STORIES_FETCH_SUCCESS = 'STORIES_FETCH_SUCCESS';
-const STORIES_FETCH_FAILURE = 'STORIES_FETCH_FAILURE';
-const REMOVE_STORY = 'REMOVE_STORY';
+const STORIES_FETCH_INIT = 'STORIES_FETCH_INIT' as const;
+const STORIES_FETCH_SUCCESS = 'STORIES_FETCH_SUCCESS' as const;
+const STORIES_FETCH_FAILURE = 'STORIES_FETCH_FAILURE' as const;
+const REMOVE_STORY = 'REMOVE_STORY' as const;
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
-const storiesReducer = (state, action) => {
+type StoriesState = {
+  data: Story[];
+  isLoading: boolean;
+  isError: boolean;
+};
+
+type StoriesFetchInitAction = {
+  type: typeof STORIES_FETCH_INIT;
+};
+
+type StoriesFetchSuccessAction = {
+  type: typeof STORIES_FETCH_SUCCESS;
+  payload: Story[];
+};
+
+type StoriesFetchFailureAction = {
+  type: typeof STORIES_FETCH_FAILURE;
+};
+
+type StoriesRemoveAction = {
+  type: typeof REMOVE_STORY;
+  payload: Story;
+};
+
+type StoriesAction =
+  | StoriesFetchInitAction
+  | StoriesFetchSuccessAction
+  | StoriesFetchFailureAction
+  | StoriesRemoveAction;
+
+const storiesReducer = (
+  state: StoriesState,
+  action: StoriesAction,
+) => {
   switch (action.type) {
     case STORIES_FETCH_INIT:
       return {
@@ -81,7 +116,7 @@ export const useStories = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory = useCallback((item) => {
+  const handleRemoveStory = useCallback((item: Story) => {
     dispatchStories({
       type: 'REMOVE_STORY',
       payload: item,
@@ -89,7 +124,7 @@ export const useStories = () => {
   }, []);
 
   const handleSearchInput = useCallback(
-    (event) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(event.target.value);
     },
     [setSearchTerm],
@@ -106,14 +141,14 @@ export const useStories = () => {
     );
   }, [stories]);
 
-  return [
-    stories.data,
+  return {
+    stories: stories.data,
     searchTerm,
     handleSearchInput,
     searchAction,
     handleRemoveStory,
     getSumComments,
-    stories.isLoading,
-    stories.isError,
-  ];
+    isLoading: stories.isLoading,
+    isError: stories.isError,
+  };
 };

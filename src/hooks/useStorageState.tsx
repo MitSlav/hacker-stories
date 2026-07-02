@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-export const useStorageState = (key, initialState) => {
+export const useStorageState = (
+  key: string,
+  initialState: string,
+) => {
   const isMounted = useRef(false);
 
   const [value, setValue] = useState(
@@ -15,5 +18,5 @@ export const useStorageState = (key, initialState) => {
     }
   }, [value, key]);
 
-  return [value, setValue];
+  return [value, setValue] as const;
 };

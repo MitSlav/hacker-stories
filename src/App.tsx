@@ -1,10 +1,10 @@
-import { useStories } from "./hooks/useStories";
-import List from './List';
-import SearchForm from './SearchForm';
-import { StyledContainer, StyledHeadlinePrimary } from "./Styles";
+import { useStories } from './hooks/useStories.jsx';
+import List from './List.jsx';
+import SearchForm from './SearchForm.jsx';
+import { StyledContainer, StyledHeadlinePrimary } from './Styles.jsx';
 
 const App = () => {
-  const [
+  const {
     stories,
     searchTerm,
     handleSearchInput,
@@ -12,8 +12,8 @@ const App = () => {
     handleRemoveStory,
     getSumComments,
     isLoading,
-    isError
-  ] = useStories();
+    isError,
+  } = useStories();
 
   return (
     <StyledContainer>
@@ -34,10 +34,7 @@ const App = () => {
       {isLoading ? (
         <p>Loading ...</p>
       ) : (
-        <List
-          list={stories}
-          onRemoveItem={handleRemoveStory}
-        />
+        <List list={stories} onRemoveItem={handleRemoveStory} />
       )}
     </StyledContainer>
   );
