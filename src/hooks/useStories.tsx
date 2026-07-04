@@ -12,7 +12,7 @@ import { Story } from '../types/item';
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
-enum StoriesActionType {
+export enum StoriesActionType {
   FETCH_INIT = 'FETCH_INIT',
   FETCH_SUCCESS = 'FETCH_SUCCESS',
   FETCH_FAILURE = 'FETCH_FAILURE',
@@ -31,7 +31,7 @@ type StoriesAction =
   | { type: StoriesActionType.FETCH_FAILURE }
   | { type: StoriesActionType.REMOVE_STORY; payload: Story };
 
-const storiesReducer = (
+export const storiesReducer = (
   state: StoriesState,
   action: StoriesAction,
 ) => {
