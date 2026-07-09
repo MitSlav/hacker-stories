@@ -1,10 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 
 import App from './App';
 import {
   StoriesActionType,
   storiesReducer,
 } from './hooks/useStories';
+import Item from './Item';
+import SearchForm from './SearchForm';
 
 const storyOne = {
   title: 'React',
@@ -94,5 +102,74 @@ describe('storiesReducer', () => {
     };
 
     expect(newState).toStrictEqual(expectedState);
+  });
+});
+
+describe('Item', () => {
+  it('renders all properties', () => {
+    render(<Item item={storyOne} />);
+
+    expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
+    expect(screen.getByText('React')).toHaveAttribute(
+      'href',
+      'https://react.dev/',
+    );
+  });
+
+  it('renders a clickable dismiss button', () => {
+    render(<Item item={storyOne} />);
+    // screen.getByRole('');
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  it('calls the callback handler when clicking the dismiss button', () => {
+    const handleRemoveitem = vi.fn();
+
+    render(<Item item={storyOne} onRemoveItem={handleRemoveitem} />);
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(handleRemoveitem).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('SearchForm', () => {
+  const searchFormProps = {
+    searchTerm: 'React',
+    isLoading: false,
+    onSearchInput: vi.fn(),
+    searchAction: vi.fn(),
+  };
+
+  it('renders the input field with its value', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    expect(screen.getByDisplayValue('React')).toBeInTheDocument();
+  });
+
+  it('renders the correct label', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    // screen.debug();
+
+    expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+  });
+
+  it('calls onSearchInput on input field change', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    fireEvent.change(screen.getByDisplayValue('React'), {
+      target: { value: 'Redux' },
+    });
+
+    expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls searchAction on button submit click', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(searchFormProps.searchAction).toHaveBeenCalledTimes(1);
   });
 });
